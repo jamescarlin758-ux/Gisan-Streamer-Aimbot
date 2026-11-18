@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gisan Server | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <span class="brand">Gisan Server</span>
+        <button onclick="logout()" class="btn-logout">LOGOUT</button>
+    </nav>
+    <div class="container">
+        <div class="panel">
+            <h3>ADD USER SID</h3>
+            <div class="input-group">
+                <input type="text" id="sid-name" placeholder="User Name">
+            </div>
+            <div class="input-group">
+                <input type="text" id="sid-value" placeholder="SID (S-1-5-21-...)">
+            </div>
+            <div class="input-group">
+                <input type="date" id="sid-date">
+            </div>
+            <button onclick="submitSID()" id="btn" class="btn-cyan">SUBMIT SID</button>
+        </div>
+    </div>
+    <script>
+        if (!localStorage.getItem("gisan_auth")) window.location.href = "index.html";
+        function logout() { localStorage.removeItem("gisan_auth"); window.location.href = "index.html"; }
+
+        async function submitSID() {
+            const name = document.getElementById('sid-name').value;
+            const sid = document.getElementById('sid-value').value;
+            const date = document.getElementById('sid-date').value;
+            const btn = document.getElementById('btn');
+
+            if (!name || !sid || !date) return alert("Fill all fields");
+
+            btn.innerText = "SUBMITTING...";
+            const expire_time = new Date(date).getTime();
+
+            try {
+                const res = await fetch("/api/add_sid", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, sid, expire_time })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert("SID Added Successfully!");
+                    location.reload();
+                } else {
+                    alert("Error: " + data.message);
+                }
+            } catch (err) {
+                alert("Failed to connect");
+            } finally {
+                btn.innerText = "SUBMIT SID";
+            }
+        }
+    </script>
+</body>
+</html>
