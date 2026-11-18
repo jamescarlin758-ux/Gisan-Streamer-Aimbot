@@ -24,10 +24,48 @@
             </div>
             <button onclick="submitSID()" id="btn" class="btn-cyan">SUBMIT SID</button>
         </div>
+
+        <div class="panel" style="margin-top: 20px;">
+            <h3>ACTIVE SIDS</h3>
+            <div id="sid-list" style="color: white;">
+                <!-- List will appear here -->
+            </div>
+        </div>
     </div>
+
     <script>
         if (!localStorage.getItem("gisan_auth")) window.location.href = "index.html";
         function logout() { localStorage.removeItem("gisan_auth"); window.location.href = "index.html"; }
+
+        async function loadSIDs() {
+            try {
+                const res = await fetch("/api/get_sids");
+                const data = await res.json();
+                const listDiv = document.getElementById('sid-list');
+                listDiv.innerHTML = "";
+                
+                if (Object.keys(data.sids).length === 0) {
+                    listDiv.innerHTML = "<p>No active SIDs.</p>";
+                    return;
+                }
+
+                for (const [sid, info] of Object.entries(data.sids)) {
+                    const date = new Date(info.expire_time).toLocaleDateString();
+                    listDiv.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #1a2f4c;">
+                            <div>
+                                <strong style="color:#00e5ff;">${info.name}</strong><br>
+                                <small>${sid}</small><br>
+                                <small>Expires: ${date}</small>
+                            </div>
+                            <button onclick="removeSID('${sid}')" style="background:red; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px;">Remove</button>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
 
         async function submitSID() {
             const name = document.getElementById('sid-name').value;
@@ -49,7 +87,10 @@
                 const data = await res.json();
                 if (data.success) {
                     alert("SID Added Successfully!");
-                    location.reload();
+                    document.getElementById('sid-name').value = "";
+                    document.getElementById('sid-value').value = "";
+                    document.getElementById('sid-date').value = "";
+                    loadSIDs(); // Refresh list
                 } else {
                     alert("Error: " + data.message);
                 }
@@ -59,6 +100,28 @@
                 btn.innerText = "SUBMIT SID";
             }
         }
+
+        async function removeSID(sid) {
+            if (!confirm("Are you sure you want to remove this SID?")) return;
+            try {
+                const res = await fetch("/api/remove_sid", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sid })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    loadSIDs(); // Refresh list
+                } else {
+                    alert("Failed to remove");
+                }
+            } catch (err) {
+                alert("Error connecting to server");
+            }
+        }
+
+        // Load SIDs on page load
+        loadSIDs();
     </script>
 </body>
 </html>
