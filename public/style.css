@@ -1,0 +1,16 @@
+:root { --bg: #050b14; --panel: #0a1526; --border: #1a2f4c; --cyan: #00e5ff; --text: #fff; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; }
+.login-body { display: flex; justify-content: center; align-items: center; }
+.login-container { background: var(--panel); padding: 40px; border-radius: 8px; border: 1px solid var(--border); text-align: center; width: 100%; max-width: 400px; }
+.login-container h2 { color: var(--cyan); margin-bottom: 20px; }
+.navbar { display: flex; justify-content: space-between; padding: 20px; background: var(--panel); border-bottom: 1px solid var(--border); }
+.brand { font-weight: bold; color: var(--cyan); }
+.btn-logout { background: none; border: 1px solid var(--text); color: var(--text); padding: 5px 10px; cursor: pointer; }
+.container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+.panel { background: var(--panel); padding: 20px; border-radius: 8px; border: 1px solid var(--border); }
+.panel h3 { color: var(--cyan); margin-bottom: 20px; }
+.input-group { margin-bottom: 15px; }
+input { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px; }
+.btn-cyan { width: 100%; padding: 12px; background: var(--cyan); border: none; font-weight: bold; cursor: pointer; color: #000; }
+.error-msg { color: red; margin-top: 10px; }
