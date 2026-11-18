@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gisan Server | Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <h2>GISAN SERVER</h2>
+        <p class="subtitle">SYSTEM ACCESS</p>
+        <div class="input-group">
+            <input type="text" id="username" placeholder="Username">
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password">
+        </div>
+        <button onclick="login()" class="btn-cyan">LOG IN</button>
+        <p id="error-msg" class="error-msg"></p>
+    </div>
+    <script>
+        function login() {
+            const user = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+            if (user === "admin" && pass === "admin123") {
+                localStorage.setItem("gisan_auth", "true");
+                window.location.href = "dashboard.html";
+            } else {
+                document.getElementById("error-msg").textContent = "INVALID CREDENTIALS";
+            }
+        }
+    </script>
+</body>
+</html>
